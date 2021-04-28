@@ -14,13 +14,13 @@ import userRouter from "./routers/userRouter.js";
 import videoRouter from "./routers/videoRouter.js";
 
 const PORT = 4000;
-
 const app = express();
 const logger = morgan("dev");
 
 app.set("view engine", "pug");
 app.set("views", process.cwd() + "/src/views");
 app.use(logger);
+app.use(express.urlencoded({ extended: true })); //express가 body를 읽고 js로 transformgㅏㄹ 수 있도록
 app.use("/", globalRouter);
 app.use("/videos", videoRouter);
 app.use("/users", userRouter);
