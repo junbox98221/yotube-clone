@@ -7,16 +7,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/junbox98221/yotube-clone.git"
+    "url": "git+https://github.com/junbox98221/youtube-clone.git"
   },
   "author": "MJK",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/junbox98221/yotube-clone/issues"
+    "url": "https://github.com/junbox98221/youtube-clone/issues"
   },
-  "homepage": "https://github.com/junbox98221/yotube-clone#readme",
+  "homepage": "https://github.com/junbox98221/youtube-clone#readme",
   "dependencies": {
     "express": "^4.17.1",
+    "mongoose": "^5.13.4",
     "morgan": "^1.10.0",
     "pug": "^3.0.2"
   },
@@ -24,6 +25,7 @@
     "@babel/core": "^7.13.16",
     "@babel/node": "^7.13.13",
     "@babel/preset-env": "^7.13.15",
+    "kill-port": "^1.6.1",
     "nodemon": "^2.0.7"
   }
 }
