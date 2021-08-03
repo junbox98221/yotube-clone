@@ -9,8 +9,8 @@ import {
 
 const videoRouter = express.Router();
 
-videoRouter.get("/:id(\\d+)", watch); //정규표현식 활용. 정수가 아닌 id는 받지 않는다!!
-videoRouter.route("/:id(\\d+)/edit").get(getEdit).post(postEdit);
+videoRouter.get("/:id([0-9a-f]{24})", watch);
+videoRouter.route("/:id([0-9a-f]{24})/edit").get(getEdit).post(postEdit);
 videoRouter.route("/upload").get(getUpload).post(postUpload);
 
 export default videoRouter;
