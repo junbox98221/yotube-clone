@@ -1,9 +1,15 @@
 import express from "express";
-import { edit, logout, see } from "../controllers/userController.js";
+import {
+  postEdit,
+  getEdit,
+  logout,
+  see,
+} from "../controllers/userController.js";
+import { protectorMiddleware } from "../middlewares.js";
 
 const userRouter = express.Router();
-userRouter.get("/logout", logout);
-userRouter.get("/edit", edit);
+userRouter.get("/logout", protectorMiddleware, logout);
+userRouter.route("/edit").all().get(getEdit).post(postEdit);
 userRouter.get("/:id", see);
 
 export default userRouter;
