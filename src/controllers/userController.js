@@ -41,6 +41,7 @@ export const getLogin = (req, res) =>
 export const postLogin = async (req, res) => {
   const { username, password } = req.body;
   const pageTitle = "Login";
+  //아래 finOne 조건에 socialOnly:false 포함되어야 함
   const user = await User.findOne({ username });
   if (!user) {
     return res.status(400).render("login", {
@@ -63,22 +64,75 @@ export const postLogin = async (req, res) => {
 export const getEdit = (req, res) => {
   return res.render("edit-profile", { pageTitle: "Edit Profile" });
 };
+
 export const postEdit = async (req, res) => {
+  const {
+    session: {
+      user: { _id, email: sessionEmail, username: sessionUsername, avatarUrl },
+    },
+    body: { name, email, username, location },
+    file,
+  } = req;
+  let searchParam = [];
+
+  if (sessionUsername !== username) searchParam.push({ username });
+  if (sessionEmail !== email) searchParam.push({ email });
+
+  if (searchParam.length > 0) {
+    const foundUser = await User.findOne({ $or: searchParam });
+
+    if (foundUser && foundUser._id.toString() !== _id) {
+      return res.status(400).render("edit-profile", {
+        pageTitle: "Edit Profile",
+        errorMessage: "This username/email is already taken.",
+      });
+    }
+  }
+
+  const updatedUser = await User.findByIdAndUpdate(
+    _id,
+    {
+      name,
+      email,
+      username,
+      location,
+      avatarUrl: file ? file.path : avatarUrl,
+    },
+    { new: true }
+  );
+  req.session.user = updatedUser;
+  return res.redirect("/users/edit");
+};
+
+export const getChangePassword = async (req, res) => {
+  return res.render("change-password", { pageTtile: "Change Password" });
+};
+
+export const postChangePassword = async (req, res) => {
   const {
     session: {
       user: { _id },
     },
-    body: { name, email, username, location },
+    body: { oldPassword, newPassword, newPasswordConfirmation },
   } = req;
-  await User.findByIdAndUpdate(_id, {
-    name,
-    email,
-    username,
-    location,
-  });
-  return res.render("edit-profile");
+  const user = await User.findById(_id);
+  const ok = await bcrypt.compare(oldPassword, user.password);
+  if (!ok) {
+    return res.status(400).render("change-password", {
+      pageTtile: "Change Password",
+      errorMessage: "The current password is incorrect.",
+    });
+  }
+  if (newPassword !== newPasswordConfirmation) {
+    return res.status(400).render("change-password", {
+      pageTtile: "Change Password",
+      errorMessage: "The password does not match the confirmation",
+    });
+  }
+  user.password = newPassword;
+  await user.save();
+  return res.redirect("/users/logout");
 };
-
 export const remove = (req, res) => res.send("Remove User");
 export const logout = (req, res) => res.send("Log out");
 export const see = (req, res) => res.send("See User");
