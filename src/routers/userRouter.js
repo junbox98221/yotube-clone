@@ -7,11 +7,7 @@ import {
   getChangePassword,
   postChangePassword,
 } from "../controllers/userController.js";
-import {
-  protectorMiddleware,
-  publicOnlyMiddleware,
-  avatarUpload,
-} from "../middlewares.js";
+import { protectorMiddleware, avatarUpload } from "../middlewares.js";
 
 const userRouter = express.Router();
 userRouter.get("/logout", protectorMiddleware, logout);
