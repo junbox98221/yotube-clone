@@ -6,6 +6,8 @@ import {
   see,
   getChangePassword,
   postChangePassword,
+  startGithubLogin,
+  finishGithubLogin,
 } from "../controllers/userController.js";
 import { protectorMiddleware, avatarUpload } from "../middlewares.js";
 
@@ -21,6 +23,8 @@ userRouter
   .all(protectorMiddleware)
   .get(getChangePassword)
   .post(postChangePassword);
+userRouter.get("/github/start", startGithubLogin);
+userRouter.get("/github/finish", finishGithubLogin);
 userRouter.get("/:id", see);
 
 export default userRouter;
