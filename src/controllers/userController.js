@@ -27,6 +27,7 @@ export const postJoin = async (req, res) => {
       email,
       password,
       location,
+      socialOnly: false,
     });
     return res.redirect("/login");
   } catch (error) {
