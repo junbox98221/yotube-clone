@@ -29,6 +29,7 @@ export const getEdit = async (req, res) => {
     return res.render("404", { pageTitle: "Video not found." });
   }
   if (String(video.owner) !== String(_id)) {
+    req.flash("error", "Not authorized");
     return res.status(403).redirect("/");
   } else {
     return res.render("edit", { pageTitle: `Watching`, video });
@@ -52,7 +53,7 @@ export const postEdit = async (req, res) => {
     description,
     hashtags: Video.formatHashtags(hashtags),
   });
-
+  req.flash("success", "Changes saved.");
   return res.redirect(`/videos/${id}`);
 };
 
@@ -114,4 +115,15 @@ export const search = async (req, res) => {
   }
 
   return res.render("search", { pageTitle: "Search", videos });
+};
+
+export const registerView = async (req, res) => {
+  const { id } = req.params;
+  const video = await Video.findById(id);
+  if (!video) {
+    return res.sendStatus(404);
+  }
+  video.meta.views = video.meta.views + 1;
+  await video.save();
+  return res.sendStatus(200);
 };
